@@ -1,0 +1,40 @@
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      target: development_image
+    volumes:
+      - ./frontend:/app/frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+      
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: development_image
+    environment:
+      - DATABASE_URL=postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@postgres:5432/${DATABASE_DB}
+    volumes:
+      - ./backend:/app/backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres
+    image: postgres:18.0-bookworm
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_DB}
+    volumes:
+      - ./seed_db:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"

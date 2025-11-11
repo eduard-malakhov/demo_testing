@@ -3,6 +3,7 @@
     "husky": "^8.0.0"
   },
   "scripts": {
+    "dev": "docker compose build && docker compose up",
     "frontend:dev": "npm run dev --workspace frontend",
     "backend:dev": "npm run dev --workspace backend",
     "prepare": "husky && husky install"
